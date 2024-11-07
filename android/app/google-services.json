@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "761279766095",
+    "project_id": "fresh-day-dairy",
+    "storage_bucket": "fresh-day-dairy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761279766095:android:8bce15cf30edc440ebd43a",
+        "android_client_info": {
+          "package_name": "com.example.fresh_day_dairy_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr1z_01NAgw5-7FQHd6yoJt1ju7uZAEis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
