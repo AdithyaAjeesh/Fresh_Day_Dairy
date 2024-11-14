@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="fresh_day_dairy_project"
+        android:label="Fresh Day Dairy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

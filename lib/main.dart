@@ -6,7 +6,12 @@ import 'package:fresh_day_dairy_project/common/controller/bottom_nav_controller.
 import 'package:fresh_day_dairy_project/common/themes/lightmode_theme.dart';
 import 'package:fresh_day_dairy_project/firebase_options.dart';
 import 'package:fresh_day_dairy_project/authentication/controller/auth_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/butter_milk/all_time_butter_milk_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/butter_milk_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/butter_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/curd_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/ghee_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/milk_product_controller.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -30,8 +35,19 @@ class MyApp extends StatelessWidget {
           create: (context) => BottomNavController(),
         ),
         ChangeNotifierProvider(
-          create: (context) => ProductController(),
-        )
+          create: (context) => MilkProductController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ButterMilkProductController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GheeProductController(),
+        ),
+         ChangeNotifierProvider(
+          create: (context) => CurdProductController(),
+        ),  ChangeNotifierProvider(
+          create: (context) => ButterProductController(),
+        ),
       ],
       child: MaterialApp(
         // home: const MilkScreen(),

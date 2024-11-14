@@ -72,7 +72,12 @@ class SignupScreenEmail extends StatelessWidget {
                         children: [
                           const Text('Dont have an Account'),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                builder: (context) => SignupScreenEmail(),
+                              ));
+                            },
                             child: Text(
                               'Login',
                               style: TextStyle(

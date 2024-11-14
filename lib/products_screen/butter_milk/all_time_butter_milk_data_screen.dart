@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/butter_milk_product_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +11,7 @@ class AllTimeButterMilkDataScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<ProductController>(context);
+    final prov = Provider.of<ButterMilkProductController>(context);
     final theme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -48,9 +47,10 @@ class AllTimeButterMilkDataScreen extends StatelessWidget {
             var userName = data['userName'] ?? 'No User Name';
             var docId = doc.id;
             var email = data['email'] ?? 'No email';
-            var milkDailyTasks = List<int>.from(data['milkDailyTasks'] ?? []);
-            var milkDailyQuantity = data['milkDailyQuantity'] ?? 0;
-            var milkDailyAmount = data['milkDailyAmount'] ?? 0;
+            var milkDailyTasks =
+                List<int>.from(data['butterMilkDailyTasks'] ?? []);
+            var milkDailyQuantity = data['butterMilkDailyQuantity'] ?? 0;
+            var milkDailyAmount = data['butterMilkDailyAmount'] ?? 0;
             var timestamp = data['timestamp']?.toDate() ?? DateTime.now();
             milkDailyTasks.sort();
             // Create a widget for each document's data
@@ -84,7 +84,7 @@ class AllTimeButterMilkDataScreen extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        prov.deleteAllTimeMilkData(docId);
+                        prov.deleteAllTimeButterMilkData(docId);
                       },
                       icon: const Icon(
                         Icons.delete,
@@ -109,7 +109,7 @@ class AllTimeButterMilkDataScreen extends StatelessWidget {
 
                     const SizedBox(height: 10),
                     Text(
-                      'Milk Daily Quantity: $milkDailyQuantity',
+                      'ButterMilk Daily Quantity: $milkDailyQuantity',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -118,7 +118,7 @@ class AllTimeButterMilkDataScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Milk Daily Amount: $milkDailyAmount',
+                      'ButterMilk Daily Amount: $milkDailyAmount',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -127,7 +127,7 @@ class AllTimeButterMilkDataScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Milk Daily Tasks:',
+                      'ButterMilk Daily Tasks:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

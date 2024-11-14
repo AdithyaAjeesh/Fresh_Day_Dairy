@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fresh_day_dairy_project/products_screen/butter_milk/all_time_butter_milk_data_screen.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/product_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/milk/All_time_milk_data_screen.dart';
-import 'package:provider/provider.dart';
 
-class AllTimeButterMilkUserScreen extends StatelessWidget {
+class UserListScreen extends StatelessWidget {
+  final String collectionName;
+  final Widget Function(String email) detailScreenBuilder;
+
+   UserListScreen({
+    super.key,
+    required this.collectionName,
+    required this.detailScreenBuilder,
+  });
+
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-
-  AllTimeButterMilkUserScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<ProductController>(context);
     final theme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -20,9 +22,7 @@ class AllTimeButterMilkUserScreen extends StatelessWidget {
         title: const Text('Users List'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: firebaseFirestore
-            .collection('all_time_butter_milk_data')
-            .snapshots(),
+        stream: firebaseFirestore.collection(collectionName).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -38,6 +38,7 @@ class AllTimeButterMilkUserScreen extends StatelessWidget {
 
           final allTimeData = snapshot.data!.docs;
           final uniqueUsers = <String, Map<String, dynamic>>{};
+
           for (var doc in allTimeData) {
             var data = doc.data() as Map<String, dynamic>;
             var email = data['email'] ?? '';
@@ -56,8 +57,7 @@ class AllTimeButterMilkUserScreen extends StatelessWidget {
               var email = data['email'] ?? 'No email';
 
               return Card(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 color: theme.secondary,
                 child: ListTile(
                   title: Row(
@@ -91,8 +91,7 @@ class AllTimeButterMilkUserScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            AllTimeButterMilkDataScreen(userEmail: email),
+                        builder: (context) => detailScreenBuilder(email),
                       ),
                     );
                   },

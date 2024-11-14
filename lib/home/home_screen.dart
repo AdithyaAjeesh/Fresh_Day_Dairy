@@ -10,6 +10,7 @@ import 'package:fresh_day_dairy_project/notification/notification_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/butter/butter_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/butter_milk/butter_milk_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/curd/curd_details_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/ghee/ghee_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/milk/milk_details_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -91,6 +92,14 @@ class HomeScreen extends StatelessWidget {
               ProductCard(
                 callback: () async {
                   UserModel? user = await authProvider.getCurrentUser();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => GheeDetailsScreen(
+                        email: user!.email!,
+                        isAdmin: user.isAdmin,
+                      ),
+                    ),
+                  );
                 },
                 image: 'assets/ghee.jpg',
                 title: "Ghee",
@@ -99,6 +108,14 @@ class HomeScreen extends StatelessWidget {
               ProductCard(
                 callback: () async {
                   UserModel? user = await authProvider.getCurrentUser();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CurdDetailsScreen(
+                        email: user!.email!,
+                        isAdmin: user.isAdmin,
+                      ),
+                    ),
+                  );
                 },
                 image: 'assets/curd.jpg',
                 title: "Curd",
@@ -107,6 +124,14 @@ class HomeScreen extends StatelessWidget {
               ProductCard(
                 callback: () async {
                   UserModel? user = await authProvider.getCurrentUser();
+                   Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ButterDetailsScreen(
+                        email: user!.email!,
+                        isAdmin: user.isAdmin,
+                      ),
+                    ),
+                  );
                 },
                 image: 'assets/butter.jpg',
                 title: "Butter",

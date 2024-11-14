@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/product_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/milk/All_time_milk_user_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/butter_milk/all_time_butter_milk_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/butter_milk_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
 import 'package:provider/provider.dart';
 
 class ButterMilkDetailsScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
-    final pro = Provider.of<ProductController>(context);
+    final pro = Provider.of<ButterMilkProductController>(context);
 
     Future<void> showUpdateDialog(BuildContext context, String title,
         double initialValue, Function(double) onUpdate) {
@@ -99,13 +100,19 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                   onSelected: (value) {
                     // Handle the selected value
                     if (value == 'save') {
-                      pro.saveAllUsersMilkData();
+                      pro.saveAllUsersButterMilkData();
                     } else if (value == 'clear') {
-                      pro.clearMilkTasksForAllUsers(context);
+                      pro.clearButterMilkTasksForAllUsers(context);
                     } else if (value == 'data') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AllTimeMilkUserScreen(),
+                          builder: (context) => UserListScreen(
+                            collectionName: 'all_time_butter_milk_data',
+                            detailScreenBuilder: (email) {
+                              return AllTimeButterMilkDataScreen(
+                                  userEmail: email);
+                            },
+                          ),
                         ),
                       );
                     }
@@ -134,7 +141,8 @@ class ButterMilkDetailsScreen extends StatelessWidget {
         backgroundColor: theme.surface,
       ),
       backgroundColor: theme.secondary,
-      body: Consumer<ProductController>(builder: (context, provider, child) {
+      body: Consumer<ButterMilkProductController>(
+          builder: (context, provider, child) {
         return StreamBuilder<List<UserModel>>(
           stream: isAdmin!
               ? provider.getAllUsers() // Stream of all users for admin
@@ -158,8 +166,8 @@ class ButterMilkDetailsScreen extends StatelessWidget {
 
             double totalAmount = 0.0;
             for (var user in users) {
-              totalAmount +=
-                  user.milkDailyAmount ?? 0.0; // Add the user's milkDailyAmount
+              totalAmount += user.butterMilkDailyAmount ??
+                  0.0; // Add the user's milkDailyAmount
             }
 
             return Column(
@@ -278,7 +286,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.milkDailyAmount
+                                      user.butterMilkDailyAmount
                                           .toString(), // Example amount
                                       style: const TextStyle(
                                         fontSize: 18,
@@ -299,7 +307,8 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Daily Quantity',
-                                        user.milkDailyQuantity!.toDouble(),
+                                        user.butterMilkDailyQuantity!
+                                            .toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
@@ -312,7 +321,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.milkDailyQuantity
+                                      user.butterMilkDailyQuantity
                                           .toString(), // Example quantity
                                       style: const TextStyle(
                                         fontSize: 18,

@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/product_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/milk/All_time_milk_user_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/milk_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/milk/All_time_milk_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
 import 'package:provider/provider.dart';
 
 class MilkDetailsScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class MilkDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
-    final pro = Provider.of<ProductController>(context);
+    final pro = Provider.of<MilkProductController>(context);
 
     Future<void> showUpdateDialog(BuildContext context, String title,
         double initialValue, Function(double) onUpdate) {
@@ -105,7 +106,13 @@ class MilkDetailsScreen extends StatelessWidget {
                     } else if (value == 'data') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => AllTimeMilkUserScreen()),
+                          builder: (context) => UserListScreen(
+                            collectionName: 'all_time_milk_data',
+                            detailScreenBuilder: (email) {
+                              return AllTimeMilkDataScreen(userEmail: email);
+                            },
+                          ),
+                        ),
                       );
                     }
                   },
@@ -133,7 +140,8 @@ class MilkDetailsScreen extends StatelessWidget {
         backgroundColor: theme.surface,
       ),
       backgroundColor: theme.secondary,
-      body: Consumer<ProductController>(builder: (context, provider, child) {
+      body:
+          Consumer<MilkProductController>(builder: (context, provider, child) {
         return StreamBuilder<List<UserModel>>(
           stream: isAdmin!
               ? provider.getAllUsers() // Stream of all users for admin
