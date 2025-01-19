@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
 import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter/all_time_butter_data_screen.dart';
-import 'package:fresh_day_dairy_project/products_screen/butter_milk/all_time_butter_milk_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter_milk/all_time_butter_milk_data_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/butter_product_controller.dart';
 import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
 import 'package:provider/provider.dart';

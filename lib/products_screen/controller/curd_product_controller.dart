@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,21 +11,20 @@ class CurdProductController extends ChangeNotifier {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   Set<String> selectedItems = {};
-  notify() {
+
+  void notify() {
     notifyListeners();
   }
 
   Stream<List<UserModel>> getAllUsers() {
-    return firebaseFirestore.collection('users').snapshots().map(
-      (snapshot) {
-        List<UserModel> users = snapshot.docs
-            .map((doc) => UserModel.fromJson(doc.data()))
-            .where((user) => user.isAdmin != true) // Exclude admins
-            .toList();
+    return firebaseFirestore.collection('users').snapshots().map((snapshot) {
+      List<UserModel> users = snapshot.docs
+          .map((doc) => UserModel.fromJson(doc.data()))
+          .where((user) => user.isAdmin != true) // Exclude admins
+          .toList();
 
-        return users;
-      },
-    );
+      return users;
+    });
   }
 
   Stream<List<UserModel>> getUserByEmail(String email) {
@@ -37,10 +34,9 @@ class CurdProductController extends ChangeNotifier {
         .snapshots()
         .map((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        // Return the first UserModel in a List
         return [UserModel.fromJson(snapshot.docs.first.data())];
       }
-      return []; // Return an empty list if no user found
+      return [];
     });
   }
 
@@ -53,9 +49,8 @@ class CurdProductController extends ChangeNotifier {
       var querySnapshot = await userQuery.get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        var userDoc =
-            querySnapshot.docs.first; // Get the first matched document
-        var userDocRef = userDoc.reference; // Reference to the document
+        var userDoc = querySnapshot.docs.first;
+        var userDocRef = userDoc.reference;
 
         await userDocRef.update({
           'curdDailyTasks': user.curdDailyTasks,
@@ -80,20 +75,19 @@ class CurdProductController extends ChangeNotifier {
       var querySnapshot = await userQuery.get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        var userDoc =
-            querySnapshot.docs.first; // Get the first matched document
-        var userDocRef = userDoc.reference; // Reference to the document
+        var userDoc = querySnapshot.docs.first;
+        var userDocRef = userDoc.reference;
 
         await userDocRef.update({
           task: newValue,
         });
 
-        log('User updated successfully');
+        log('User task "$task" updated successfully');
       } else {
         log('User not found');
       }
     } catch (e) {
-      log('Error updating user: $e');
+      log('Error updating user task "$task": $e');
     }
   }
 
@@ -107,18 +101,19 @@ class CurdProductController extends ChangeNotifier {
       if (userSnapshot.docs.isNotEmpty) {
         final userDoc = userSnapshot.docs.first;
 
-        // Clear the milkDailyTasks list
         await userDoc.reference.update({
-          'curdDailyTasks': [], // Set the list to an empty array
+          'curdDailyTasks': [],
+          'curdDailyAmount': 0,
+          'curdDailyQuantity': 0,
         });
 
-        log('All Curd daily tasks cleared successfully.');
-        notifyListeners(); // Notify listeners if the UI needs to be updated
+        log('All curd daily tasks cleared successfully for $email.');
+        notifyListeners();
       } else {
         log('User not found with email: $email');
       }
     } catch (e) {
-      log('Error clearing milk daily tasks: $e');
+      log('Error clearing curd daily tasks: $e');
     }
   }
 
@@ -127,56 +122,56 @@ class CurdProductController extends ChangeNotifier {
       // Fetch all users from the 'users' collection
       final usersSnapshot = await firebaseFirestore.collection('users').get();
 
-      // Iterate over each user document
       for (var userDoc in usersSnapshot.docs) {
-        final email = userDoc['email'];
-        final userName = userDoc['userName'];
-        final milkDailyAmount = userDoc['curdDailyAmount'];
-        final milkDailyQuantity = userDoc['curdDailyQuantity'];
-        final milkDailyTasks = userDoc['curdDailyTasks'];
+        final email = userDoc['email'] ?? 'Unknown Email';
+        final userName = userDoc['userName'] ?? 'Unknown User';
+        final curdDailyAmount = userDoc['curdDailyAmount'] ?? 0;
+        final curdDailyQuantity = userDoc['curdDailyQuantity'] ?? 0;
+        final curdDailyTasks = userDoc['curdDailyTasks'] ?? [];
+        final previousCurdBalance =
+            userDoc.data().containsKey('previousCurdBalance')
+                ? userDoc['previousCurdBalance']
+                : 0; // Use default value if the field is missing
 
-        if (milkDailyTasks != null && milkDailyTasks.isNotEmpty) {
-          // Create a reference for the new document in 'all_time_data' collection
+        if (curdDailyTasks.isNotEmpty) {
+          // Create a reference for the new document in 'all_time_curd_data' collection
           final allTimeDataRef =
               firebaseFirestore.collection('all_time_curd_data').doc();
 
           // Prepare the data to be saved
-          final milkData = {
+          final curdData = {
             'userName': userName,
             'email': email,
-            'curdDailyAmount': milkDailyAmount,
-            'curdDailyQuantity': milkDailyQuantity,
-            'curdDailyTasks': milkDailyTasks,
-            'timestamp': FieldValue
-                .serverTimestamp(), // Add timestamp for when this data was saved
+            'curdDailyAmount': curdDailyAmount,
+            'curdDailyQuantity': curdDailyQuantity,
+            'curdDailyTasks': curdDailyTasks,
+            'previousCurdBalance': previousCurdBalance,
+            'timestamp': FieldValue.serverTimestamp(),
           };
 
-          // Save the milk data to the 'all_time_data' collection
-          await allTimeDataRef.set(milkData);
+          // Save the data
+          await allTimeDataRef.set(curdData);
 
-          log('Curd data for user $email saved to all_time_data successfully.');
+          log('Curd data for user $email saved successfully.');
         } else {
-          log('No milk data found for user $email.');
+          log('No curd data to save for user $email.');
         }
       }
     } catch (e) {
-      log('Error saving all users\' Curd data: $e');
+      log('Error saving curd data: $e');
     }
   }
 
   Future<void> deleteAllTimeCurdData(String documentId) async {
     try {
-      // Reference to the document to be deleted in the 'all_time_data' collection
-      var documentRef = FirebaseFirestore.instance
-          .collection('all_time_curd_data')
-          .doc(documentId);
+      var documentRef =
+          firebaseFirestore.collection('all_time_curd_data').doc(documentId);
 
-      // Delete the document
       await documentRef.delete();
 
-      log('All-time Curd data with ID $documentId deleted successfully.');
+      log('All-time curd data with ID $documentId deleted successfully.');
     } catch (e) {
-      log('Error deleting all-time Curd data: $e');
+      log('Error deleting all-time curd data: $e');
     }
   }
 
@@ -187,7 +182,7 @@ class CurdProductController extends ChangeNotifier {
             builder: (context) => AlertDialog(
               title: const Text("Confirm Task Reset"),
               content: const Text(
-                "Are you sure you want to clear the 'Curd Daily Tasks' for all users? This action cannot be undone. Make Sure To Save the Data",
+                "Are you sure you want to clear the 'Curd Daily Tasks' for all users? This action cannot be undone. Make sure to save the data before proceeding.",
               ),
               actions: [
                 TextButton(
@@ -214,7 +209,7 @@ class CurdProductController extends ChangeNotifier {
           });
         }
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("All Curd daily tasks have been cleared.")));
+            content: Text("All curd daily tasks have been cleared.")));
       }
     } catch (e) {
       ScaffoldMessenger.of(context)

@@ -1,26 +1,27 @@
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:fresh_day_dairy_project/products_screen/controller/milk_product_controller.dart';
+// import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
+// import 'package:fresh_day_dairy_project/products_screen/controller/curd_product_controller.dart';
 // import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
 
-// class AllTimeMilkDataScreen extends StatelessWidget {
+// class AllTimeCurdDataScreen extends StatelessWidget {
 //   final String userEmail;
 
-//   const AllTimeMilkDataScreen({super.key, required this.userEmail});
+//   const AllTimeCurdDataScreen({super.key, required this.userEmail});
 
 //   @override
 //   Widget build(BuildContext context) {
-//     final prov = Provider.of<MilkProductController>(context);
+//     final prov = Provider.of<CurdProductController>(context);
 //     final theme = Theme.of(context).colorScheme;
 
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: const Text('Milk Data Details'),
+//         title: const Text('Curd Data Details'),
 //       ),
 //       body: StreamBuilder<QuerySnapshot>(
 //         stream: FirebaseFirestore.instance
-//             .collection('all_time_data')
+//             .collection('all_time_curd_data')
 //             .where('email', isEqualTo: userEmail) // Filter by the user email
 //             .snapshots(),
 //         builder: (context, snapshot) {
@@ -47,9 +48,10 @@
 //             var userName = data['userName'] ?? 'No User Name';
 //             var docId = doc.id;
 //             var email = data['email'] ?? 'No email';
-//             var milkDailyTasks = List<int>.from(data['milkDailyTasks'] ?? []);
-//             var milkDailyQuantity = data['milkDailyQuantity'] ?? 0;
-//             var milkDailyAmount = data['milkDailyAmount'] ?? 0;
+//             var milkDailyTasks = List<int>.from(data['curdDailyTasks'] ?? []);
+//             var milkDailyQuantity = data['curdDailyQuantity'] ?? 0;
+//             var milkDailyAmount = data['curdDailyAmount'] ?? 0;
+//             var milkPreviousBalance = data['previousCurdBalance'] ?? 0;
 //             var timestamp = data['timestamp']?.toDate() ?? DateTime.now();
 //             milkDailyTasks.sort();
 //             // Create a widget for each document's data
@@ -83,7 +85,7 @@
 //                     ),
 //                     IconButton(
 //                       onPressed: () {
-//                         prov.deleteAllTimeMilkData(docId);
+//                         prov.deleteAllTimeCurdData(docId);
 //                       },
 //                       icon: const Icon(
 //                         Icons.delete,
@@ -105,10 +107,9 @@
 //                         color: theme.tertiary,
 //                       ),
 //                     ),
-
 //                     const SizedBox(height: 10),
 //                     Text(
-//                       'Milk Daily Quantity: $milkDailyQuantity',
+//                       'Curd Previous Balance: $milkPreviousBalance',
 //                       style: TextStyle(
 //                         fontWeight: FontWeight.bold,
 //                         fontSize: 16,
@@ -117,7 +118,7 @@
 //                     ),
 //                     const SizedBox(height: 10),
 //                     Text(
-//                       'Milk Daily Amount: $milkDailyAmount',
+//                       'Curd Daily Quantity: $milkDailyQuantity',
 //                       style: TextStyle(
 //                         fontWeight: FontWeight.bold,
 //                         fontSize: 16,
@@ -126,7 +127,16 @@
 //                     ),
 //                     const SizedBox(height: 10),
 //                     Text(
-//                       'Milk Daily Tasks:',
+//                       'Curd Daily Amount: $milkDailyAmount',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 16,
+//                         color: theme.tertiary,
+//                       ),
+//                     ),
+//                     const SizedBox(height: 10),
+//                     Text(
+//                       'Curd Daily Tasks:',
 //                       style: TextStyle(
 //                         fontWeight: FontWeight.bold,
 //                         fontSize: 16,
@@ -163,28 +173,27 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/milk_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/curd_product_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class AllTimeMilkDataScreen extends StatelessWidget {
+class AllTimeCurdDataScreen extends StatelessWidget {
   final String userEmail;
 
-  const AllTimeMilkDataScreen({super.key, required this.userEmail});
+  const AllTimeCurdDataScreen({super.key, required this.userEmail});
 
   @override
   Widget build(BuildContext context) {
-    final prov = Provider.of<MilkProductController>(context);
+    final prov = Provider.of<CurdProductController>(context);
     final theme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Milk Data Details'),
-        backgroundColor: theme.primary,
+        title: const Text('Curd Data Details'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('all_time_data')
+            .collection('all_time_curd_data')
             .where('email', isEqualTo: userEmail)
             .snapshots(),
         builder: (context, snapshot) {
@@ -209,15 +218,16 @@ class AllTimeMilkDataScreen extends StatelessWidget {
 
           for (var doc in snapshot.data!.docs) {
             var data = doc.data() as Map<String, dynamic>;
+
             var userName = data['userName'] ?? 'No User Name';
             var docId = doc.id;
             var email = data['email'] ?? 'No email';
-            var milkDailyTasks = List<int>.from(data['milkDailyTasks'] ?? []);
-            var milkDailyQuantity = data['milkDailyQuantity'] ?? 0;
-            var milkDailyAmount = data['milkDailyAmount'] ?? 0;
-            var previousBalance = data['previousMilkBalance'] ?? 0;
+            var curdDailyTasks = List<int>.from(data['curdDailyTasks'] ?? []);
+            var curdDailyQuantity = data['curdDailyQuantity'] ?? 0;
+            var curdDailyAmount = data['curdDailyAmount'] ?? 0;
+            var previousCurdBalance = data['previousCurdBalance'] ?? 0;
             var timestamp = data['timestamp']?.toDate() ?? DateTime.now();
-            milkDailyTasks.sort();
+            curdDailyTasks.sort();
 
             dataWidgets.add(
               Card(
@@ -259,7 +269,7 @@ class AllTimeMilkDataScreen extends StatelessWidget {
                           ),
                           IconButton(
                             onPressed: () {
-                              prov.deleteAllTimeMilkData(docId);
+                              prov.deleteAllTimeCurdData(docId);
                             },
                             icon: const Icon(
                               Icons.delete,
@@ -282,9 +292,19 @@ class AllTimeMilkDataScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      // Milk data
+                      // Previous balance
                       Text(
-                        'Previous Balance: ₹$previousBalance',
+                        'Previous Balance: ₹$previousCurdBalance',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: theme.tertiary,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      // Curd daily data
+                      Text(
+                        'Curd Daily Quantity: $curdDailyQuantity',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -293,7 +313,7 @@ class AllTimeMilkDataScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Milk Daily Quantity: $milkDailyQuantity',
+                        'Curd Daily Amount: ₹$curdDailyAmount',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -302,7 +322,7 @@ class AllTimeMilkDataScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Milk Daily Amount: ₹$milkDailyAmount',
+                        'Curd Daily Tasks:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -310,20 +330,11 @@ class AllTimeMilkDataScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        'Milk Daily Tasks:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: theme.tertiary,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      // Task list
+                      // Daily tasks
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
-                        children: milkDailyTasks
+                        children: curdDailyTasks
                             .map(
                               (task) => Chip(
                                 label: Text(

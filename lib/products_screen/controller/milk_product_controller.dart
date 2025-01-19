@@ -346,7 +346,6 @@
 //   }
 // }
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -360,21 +359,22 @@ class MilkProductController extends ChangeNotifier {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   Set<String> selectedItems = {};
+
   notify() {
     notifyListeners();
   }
 
+  // Fetch all users excluding admins
   Stream<List<UserModel>> getAllUsers() {
-    return firebaseFirestore.collection('users').snapshots().map(
-      (snapshot) {
-        return snapshot.docs
-            .map((doc) => UserModel.fromJson(doc.data()))
-            .where((user) => user.isAdmin != true) // Exclude admins
-            .toList();
-      },
-    );
+    return firebaseFirestore.collection('users').snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => UserModel.fromJson(doc.data()))
+          .where((user) => user.isAdmin != true) // Exclude admins
+          .toList();
+    });
   }
 
+  // Fetch user by email
   Stream<List<UserModel>> getUserByEmail(String email) {
     return firebaseFirestore
         .collection('users')
@@ -388,13 +388,13 @@ class MilkProductController extends ChangeNotifier {
     });
   }
 
+  // Update user tasks
   Future<void> updateUser(UserModel user) async {
     try {
-      var userQuery = firebaseFirestore
+      var querySnapshot = await firebaseFirestore
           .collection('users')
-          .where('email', isEqualTo: user.email);
-
-      var querySnapshot = await userQuery.get();
+          .where('email', isEqualTo: user.email)
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         var userDocRef = querySnapshot.docs.first.reference;
@@ -412,14 +412,14 @@ class MilkProductController extends ChangeNotifier {
     }
   }
 
+  // Update specific task for a user
   Future<void> updateUserEnterableTask(
       String email, String task, int newValue) async {
     try {
-      var userQuery = firebaseFirestore
+      var querySnapshot = await firebaseFirestore
           .collection('users')
-          .where('email', isEqualTo: email);
-
-      var querySnapshot = await userQuery.get();
+          .where('email', isEqualTo: email)
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         var userDocRef = querySnapshot.docs.first.reference;
@@ -437,6 +437,7 @@ class MilkProductController extends ChangeNotifier {
     }
   }
 
+  // Clear all daily tasks for a specific user
   Future<void> clearAllMilkDailyTasks(String email) async {
     try {
       final userSnapshot = await firebaseFirestore
@@ -463,31 +464,21 @@ class MilkProductController extends ChangeNotifier {
     }
   }
 
+  // Save milk data for all users
   Future<void> saveAllUsersMilkData() async {
     try {
       final usersSnapshot = await firebaseFirestore.collection('users').get();
 
       for (var userDoc in usersSnapshot.docs) {
-        final email =
-            userDoc.data().containsKey('email') ? userDoc['email'] : '';
-        final userName =
-            userDoc.data().containsKey('userName') ? userDoc['userName'] : '';
-        final milkDailyAmount = userDoc.data().containsKey('milkDailyAmount')
-            ? userDoc['milkDailyAmount']
-            : 0;
-        final milkDailyQuantity =
-            userDoc.data().containsKey('milkDailyQuantity')
-                ? userDoc['milkDailyQuantity']
-                : 0;
-        final milkDailyTasks = userDoc.data().containsKey('milkDailyTasks')
-            ? userDoc['milkDailyTasks']
-            : [];
-        final previousMilkBalance =
-            userDoc.data().containsKey('previousMilkBalance')
-                ? userDoc['previousMilkBalance']
-                : 0;
+        final data = userDoc.data();
+        final email = data['email'] ?? '';
+        final userName = data['userName'] ?? '';
+        final milkDailyAmount = data['milkDailyAmount'] ?? 0;
+        final milkDailyQuantity = data['milkDailyQuantity'] ?? 0;
+        final milkDailyTasks = data['milkDailyTasks'] ?? [];
+        final previousMilkBalance = data['previousMilkBalance'] ?? 0;
 
-        if (milkDailyTasks != null && milkDailyTasks.isNotEmpty) {
+        if (milkDailyTasks.isNotEmpty) {
           final allTimeDataRef =
               firebaseFirestore.collection('all_time_data').doc();
 
@@ -503,16 +494,17 @@ class MilkProductController extends ChangeNotifier {
 
           await allTimeDataRef.set(milkData);
 
-          log('Milk data for user $email saved to all_time_data successfully.');
+          log('Milk data for user $email saved successfully.');
         } else {
-          log('No milk data found for user $email.');
+          log('No milk data to save for user $email.');
         }
       }
     } catch (e) {
-      log('Error saving all users\' milk data: $e');
+      log('Error saving milk data: $e');
     }
   }
 
+  // Delete all-time milk data by document ID
   Future<void> deleteAllTimeMilkData(String documentId) async {
     try {
       var documentRef =
@@ -526,6 +518,7 @@ class MilkProductController extends ChangeNotifier {
     }
   }
 
+  // Clear daily tasks for all users
   Future<void> clearMilkTasksForAllUsers(BuildContext context) async {
     try {
       bool confirm = await showDialog<bool>(

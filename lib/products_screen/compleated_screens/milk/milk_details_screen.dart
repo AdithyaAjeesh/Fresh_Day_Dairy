@@ -2,16 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/curd_product_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/curd/all_time_curd_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/milk_product_controller.dart';
+import 'package:fresh_day_dairy_project/products_screen/milk/All_time_milk_data_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
 import 'package:provider/provider.dart';
 
-class CurdDetailsScreen extends StatelessWidget {
+class MilkDetailsScreen extends StatelessWidget {
   final bool? isAdmin;
   final String email;
 
-  const CurdDetailsScreen({
+  const MilkDetailsScreen({
     super.key,
     required this.email,
     required this.isAdmin,
@@ -20,7 +20,7 @@ class CurdDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
-    final pro = Provider.of<CurdProductController>(context);
+    final pro = Provider.of<MilkProductController>(context);
 
     Future<void> showUpdateDialog(BuildContext context, String title,
         double initialValue, Function(double) onUpdate) {
@@ -75,7 +75,7 @@ class CurdDetailsScreen extends StatelessWidget {
       // ),
       appBar: AppBar(
         title: Text(
-          'Curd Details',
+          'Milk Details',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -100,16 +100,16 @@ class CurdDetailsScreen extends StatelessWidget {
                   onSelected: (value) {
                     // Handle the selected value
                     if (value == 'save') {
-                      pro.saveAllUsersCurdData();
+                      pro.saveAllUsersMilkData();
                     } else if (value == 'clear') {
-                      pro.clearCurdTasksForAllUsers(context);
+                      pro.clearMilkTasksForAllUsers(context);
                     } else if (value == 'data') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => UserListScreen(
-                            collectionName: 'all_time_curd_data',
+                            collectionName: 'all_time_data',
                             detailScreenBuilder: (email) {
-                              return AllTimeCurdDataScreen(userEmail: email);
+                              return AllTimeMilkDataScreen(userEmail: email);
                             },
                           ),
                         ),
@@ -120,11 +120,11 @@ class CurdDetailsScreen extends StatelessWidget {
                     return [
                       const PopupMenuItem<String>(
                         value: 'save',
-                        child: Text('Save All Curd Data'),
+                        child: Text('Save All Milk Data'),
                       ),
                       const PopupMenuItem<String>(
                         value: 'clear',
-                        child: Text('Clear Curd Tasks'),
+                        child: Text('Clear Milk Tasks'),
                       ),
                       const PopupMenuItem<String>(
                         value: 'data',
@@ -141,7 +141,7 @@ class CurdDetailsScreen extends StatelessWidget {
       ),
       backgroundColor: theme.secondary,
       body:
-          Consumer<CurdProductController>(builder: (context, provider, child) {
+          Consumer<MilkProductController>(builder: (context, provider, child) {
         return StreamBuilder<List<UserModel>>(
           stream: isAdmin!
               ? provider.getAllUsers() // Stream of all users for admin
@@ -166,7 +166,7 @@ class CurdDetailsScreen extends StatelessWidget {
             double totalAmount = 0.0;
             for (var user in users) {
               totalAmount +=
-                  user.curdDailyAmount ?? 0.0; // Add the user's milkDailyAmount
+                  user.milkDailyAmount ?? 0.0; // Add the user's milkDailyAmount
             }
 
             return Column(
@@ -184,7 +184,7 @@ class CurdDetailsScreen extends StatelessWidget {
                         0: const FixedColumnWidth(150.0), // Name column
                         1: const FixedColumnWidth(
                             150.0), // Previous Balance column
-                        2: const FixedColumnWidth(100.0), // Quantity column
+                        2: const FixedColumnWidth(150.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
                           i: const FixedColumnWidth(50.0), // Dates
                         34: const FixedColumnWidth(100.0), // Amount column
@@ -233,7 +233,7 @@ class CurdDetailsScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            // Add dynamic date columns (1-31)
+                            // Dynamic date columns (1-31)
                             for (int i = 1; i <= 31; i++)
                               TableCell(
                                 child: Padding(
@@ -282,7 +282,6 @@ class CurdDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Previous Balance Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -292,11 +291,11 @@ class CurdDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Previous Balance',
-                                        user.previousCurdBalance!.toDouble(),
+                                        user.previousMilkBalance!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'previousCurdBalance',
+                                              'previousMilkBalance',
                                               p0.toInt());
                                         },
                                       );
@@ -305,8 +304,8 @@ class CurdDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.previousCurdBalance?.toString() ??
-                                          '0.0',
+                                      user.previousMilkBalance?.toString() ??
+                                          '0.0', // Replace with your logic to get the previous balance
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -327,11 +326,11 @@ class CurdDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Daily Quantity',
-                                        user.curdDailyQuantity!.toDouble(),
+                                        user.milkDailyQuantity!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'curdDailyQuantity',
+                                              'milkDailyQuantity',
                                               p0.toInt());
                                         },
                                       );
@@ -340,7 +339,7 @@ class CurdDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.curdDailyQuantity.toString(),
+                                      user.milkDailyQuantity.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -351,18 +350,18 @@ class CurdDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Add dynamic checkboxes for dates (1-31)
+                              // Dynamic Checkboxes for Dates (1-31)
                               for (int i = 1; i <= 31; i++)
                                 TableCell(
                                   child: Center(
                                     child: Checkbox(
-                                      value: user.isCurdTaskCompletedForDate(i),
+                                      value: user.isMilkTaskCompletedForDate(i),
                                       onChanged: (value) {
                                         if (isAdmin!) {
                                           if (value == true) {
-                                            user.curdDailyTasks.add(i);
+                                            user.milkDailyTasks.add(i);
                                           } else {
-                                            user.curdDailyTasks.remove(i);
+                                            user.milkDailyTasks.remove(i);
                                           }
                                           provider.updateUser(user);
                                         } else {
@@ -382,11 +381,11 @@ class CurdDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Daily Amount',
-                                        user.curdDailyAmount!.toDouble(),
+                                        user.milkDailyAmount!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'curdDailyAmount',
+                                              'milkDailyAmount',
                                               p0.toInt());
                                         },
                                       );
@@ -395,7 +394,7 @@ class CurdDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.curdDailyAmount.toString(),
+                                      user.milkDailyAmount.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,

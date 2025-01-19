@@ -2,16 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
-import 'package:fresh_day_dairy_project/products_screen/controller/milk_product_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/milk/All_time_milk_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter_milk/all_time_butter_milk_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/controller/butter_milk_product_controller.dart';
 import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
 import 'package:provider/provider.dart';
 
-class MilkDetailsScreen extends StatelessWidget {
+class ButterMilkDetailsScreen extends StatelessWidget {
   final bool? isAdmin;
   final String email;
 
-  const MilkDetailsScreen({
+  const ButterMilkDetailsScreen({
     super.key,
     required this.email,
     required this.isAdmin,
@@ -20,7 +20,7 @@ class MilkDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
-    final pro = Provider.of<MilkProductController>(context);
+    final pro = Provider.of<ButterMilkProductController>(context);
 
     Future<void> showUpdateDialog(BuildContext context, String title,
         double initialValue, Function(double) onUpdate) {
@@ -75,7 +75,7 @@ class MilkDetailsScreen extends StatelessWidget {
       // ),
       appBar: AppBar(
         title: Text(
-          'Milk Details',
+          'Butter Milk Details',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -100,16 +100,17 @@ class MilkDetailsScreen extends StatelessWidget {
                   onSelected: (value) {
                     // Handle the selected value
                     if (value == 'save') {
-                      pro.saveAllUsersMilkData();
+                      pro.saveAllUsersButterMilkData();
                     } else if (value == 'clear') {
-                      pro.clearMilkTasksForAllUsers(context);
+                      pro.clearButterMilkTasksForAllUsers(context);
                     } else if (value == 'data') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => UserListScreen(
-                            collectionName: 'all_time_milk_data',
+                            collectionName: 'all_time_butter_milk_data',
                             detailScreenBuilder: (email) {
-                              return AllTimeMilkDataScreen(userEmail: email);
+                              return AllTimeButterMilkDataScreen(
+                                  userEmail: email);
                             },
                           ),
                         ),
@@ -120,11 +121,11 @@ class MilkDetailsScreen extends StatelessWidget {
                     return [
                       const PopupMenuItem<String>(
                         value: 'save',
-                        child: Text('Save All Milk Data'),
+                        child: Text('Save All Butter Milk Data'),
                       ),
                       const PopupMenuItem<String>(
                         value: 'clear',
-                        child: Text('Clear Milk Tasks'),
+                        child: Text('Clear Butter Milk Tasks'),
                       ),
                       const PopupMenuItem<String>(
                         value: 'data',
@@ -140,8 +141,8 @@ class MilkDetailsScreen extends StatelessWidget {
         backgroundColor: theme.surface,
       ),
       backgroundColor: theme.secondary,
-      body:
-          Consumer<MilkProductController>(builder: (context, provider, child) {
+      body: Consumer<ButterMilkProductController>(
+          builder: (context, provider, child) {
         return StreamBuilder<List<UserModel>>(
           stream: isAdmin!
               ? provider.getAllUsers() // Stream of all users for admin
@@ -165,8 +166,8 @@ class MilkDetailsScreen extends StatelessWidget {
 
             double totalAmount = 0.0;
             for (var user in users) {
-              totalAmount +=
-                  user.milkDailyAmount ?? 0.0; // Add the user's milkDailyAmount
+              totalAmount += user.butterMilkDailyAmount ??
+                  0.0; // Add the user's milkDailyAmount
             }
 
             return Column(
@@ -184,7 +185,7 @@ class MilkDetailsScreen extends StatelessWidget {
                         0: const FixedColumnWidth(150.0), // Name column
                         1: const FixedColumnWidth(
                             150.0), // Previous Balance column
-                        2: const FixedColumnWidth(150.0), // Quantity column
+                        2: const FixedColumnWidth(100.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
                           i: const FixedColumnWidth(50.0), // Dates
                         34: const FixedColumnWidth(100.0), // Amount column
@@ -233,7 +234,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            // Dynamic date columns (1-31)
+                            // Add dynamic date columns (1-31)
                             for (int i = 1; i <= 31; i++)
                               TableCell(
                                 child: Padding(
@@ -282,6 +283,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Previous Balance Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -291,11 +293,12 @@ class MilkDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Previous Balance',
-                                        user.previousMilkBalance!.toDouble(),
+                                        user.previousButterMilkBalance!
+                                            .toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'previousMilkBalance',
+                                              'previousButterMilkBalance',
                                               p0.toInt());
                                         },
                                       );
@@ -304,8 +307,9 @@ class MilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.previousMilkBalance?.toString() ??
-                                          '0.0', // Replace with your logic to get the previous balance
+                                      user.previousButterMilkBalance
+                                              ?.toString() ??
+                                          '0.0',
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -326,11 +330,12 @@ class MilkDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Daily Quantity',
-                                        user.milkDailyQuantity!.toDouble(),
+                                        user.butterMilkDailyQuantity!
+                                            .toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'milkDailyQuantity',
+                                              'butterMilkDailyQuantity',
                                               p0.toInt());
                                         },
                                       );
@@ -339,7 +344,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.milkDailyQuantity.toString(),
+                                      user.butterMilkDailyQuantity.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -350,18 +355,19 @@ class MilkDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Dynamic Checkboxes for Dates (1-31)
+                              // Add dynamic checkboxes for dates (1-31)
                               for (int i = 1; i <= 31; i++)
                                 TableCell(
                                   child: Center(
                                     child: Checkbox(
-                                      value: user.isMilkTaskCompletedForDate(i),
+                                      value: user
+                                          .isButterMilkTaskCompletedForDate(i),
                                       onChanged: (value) {
                                         if (isAdmin!) {
                                           if (value == true) {
-                                            user.milkDailyTasks.add(i);
+                                            user.butterMilkDailyTasks.add(i);
                                           } else {
-                                            user.milkDailyTasks.remove(i);
+                                            user.butterMilkDailyTasks.remove(i);
                                           }
                                           provider.updateUser(user);
                                         } else {
@@ -381,11 +387,11 @@ class MilkDetailsScreen extends StatelessWidget {
                                       showUpdateDialog(
                                         context,
                                         'Daily Amount',
-                                        user.milkDailyAmount!.toDouble(),
+                                        user.butterMilkDailyAmount!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'milkDailyAmount',
+                                              'butterMilkDailyAmount',
                                               p0.toInt());
                                         },
                                       );
@@ -394,7 +400,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.milkDailyAmount.toString(),
+                                      user.butterMilkDailyAmount.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
