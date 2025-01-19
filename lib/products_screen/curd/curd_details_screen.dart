@@ -181,14 +181,16 @@ class CurdDetailsScreen extends StatelessWidget {
                         width: 1,
                       ),
                       columnWidths: {
-                        0: const FixedColumnWidth(150.0),
-                        1: const FixedColumnWidth(100.0),
-                        2: const FixedColumnWidth(100.0),
-                        3: const FixedColumnWidth(50),
+                        0: const FixedColumnWidth(150.0), // Name column
+                        1: const FixedColumnWidth(
+                            150.0), // Previous Balance column
+                        2: const FixedColumnWidth(100.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
-                          i: const FixedColumnWidth(50.0),
+                          i: const FixedColumnWidth(50.0), // Dates
+                        34: const FixedColumnWidth(100.0), // Amount column
                       },
                       children: [
+                        // Header Row
                         TableRow(
                           decoration: BoxDecoration(color: theme.surface),
                           children: [
@@ -198,8 +200,9 @@ class CurdDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Name',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -208,10 +211,11 @@ class CurdDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Previous Balance',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -222,8 +226,9 @@ class CurdDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Quantity',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -236,24 +241,38 @@ class CurdDetailsScreen extends StatelessWidget {
                                   child: Text(
                                     '$i',
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        // Render rows for each user
+                        // Data Rows
                         for (var user in users)
                           TableRow(
                             children: [
+                              // Name Column
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    user.userName ??
-                                        'Unknown User', // Access the user name
+                                    user.userName ?? 'Unknown User',
                                     style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,
@@ -263,6 +282,7 @@ class CurdDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Previous Balance Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -271,12 +291,12 @@ class CurdDetailsScreen extends StatelessWidget {
                                     if (isAdmin!) {
                                       showUpdateDialog(
                                         context,
-                                        'Daily Amount',
-                                        user.curdDailyAmount!.toDouble(),
+                                        'Previous Balance',
+                                        user.previousCurdBalance!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'curdDailyAmount',
+                                              'previousCurdBalance',
                                               p0.toInt());
                                         },
                                       );
@@ -285,8 +305,8 @@ class CurdDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.curdDailyAmount
-                                          .toString(), // Example amount
+                                      user.previousCurdBalance?.toString() ??
+                                          '0.0',
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -297,6 +317,7 @@ class CurdDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Quantity Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -319,8 +340,7 @@ class CurdDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.curdDailyQuantity
-                                          .toString(), // Example quantity
+                                      user.curdDailyQuantity.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -336,7 +356,6 @@ class CurdDetailsScreen extends StatelessWidget {
                                 TableCell(
                                   child: Center(
                                     child: Checkbox(
-                                      // value: user.isMilkTaskCompletedForDate(i),
                                       value: user.isCurdTaskCompletedForDate(i),
                                       onChanged: (value) {
                                         if (isAdmin!) {
@@ -353,6 +372,40 @@ class CurdDetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              // Amount Column
+                              TableCell(
+                                child: InkWell(
+                                  onTap: () {
+                                    log(user.email!);
+
+                                    if (isAdmin!) {
+                                      showUpdateDialog(
+                                        context,
+                                        'Daily Amount',
+                                        user.curdDailyAmount!.toDouble(),
+                                        (p0) {
+                                          pro.updateUserEnterableTask(
+                                              user.email!,
+                                              'curdDailyAmount',
+                                              p0.toInt());
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      user.curdDailyAmount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                       ],

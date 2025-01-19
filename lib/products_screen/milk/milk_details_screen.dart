@@ -181,14 +181,16 @@ class MilkDetailsScreen extends StatelessWidget {
                         width: 1,
                       ),
                       columnWidths: {
-                        0: const FixedColumnWidth(150.0),
-                        1: const FixedColumnWidth(100.0),
-                        2: const FixedColumnWidth(100.0),
-                        3: const FixedColumnWidth(50),
+                        0: const FixedColumnWidth(150.0), // Name column
+                        1: const FixedColumnWidth(
+                            150.0), // Previous Balance column
+                        2: const FixedColumnWidth(150.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
-                          i: const FixedColumnWidth(50.0),
+                          i: const FixedColumnWidth(50.0), // Dates
+                        34: const FixedColumnWidth(100.0), // Amount column
                       },
                       children: [
+                        // Header Row
                         TableRow(
                           decoration: BoxDecoration(color: theme.surface),
                           children: [
@@ -198,8 +200,9 @@ class MilkDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Name',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -208,10 +211,11 @@ class MilkDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Previous Balance',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -222,13 +226,14 @@ class MilkDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Quantity',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
                             ),
-                            // Add dynamic date columns (1-31)
+                            // Dynamic date columns (1-31)
                             for (int i = 1; i <= 31; i++)
                               TableCell(
                                 child: Padding(
@@ -236,24 +241,38 @@ class MilkDetailsScreen extends StatelessWidget {
                                   child: Text(
                                     '$i',
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        // Render rows for each user
+                        // Data Rows
                         for (var user in users)
                           TableRow(
                             children: [
+                              // Name Column
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    user.userName ??
-                                        'Unknown User', // Access the user name
+                                    user.userName ?? 'Unknown User',
                                     style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,
@@ -271,12 +290,12 @@ class MilkDetailsScreen extends StatelessWidget {
                                     if (isAdmin!) {
                                       showUpdateDialog(
                                         context,
-                                        'Daily Amount',
-                                        user.milkDailyAmount!.toDouble(),
+                                        'Previous Balance',
+                                        user.previousMilkBalance!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'milkDailyAmount',
+                                              'previousMilkBalance',
                                               p0.toInt());
                                         },
                                       );
@@ -285,8 +304,8 @@ class MilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.milkDailyAmount
-                                          .toString(), // Example amount
+                                      user.previousMilkBalance?.toString() ??
+                                          '0.0', // Replace with your logic to get the previous balance
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -297,6 +316,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Quantity Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -319,8 +339,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.milkDailyQuantity
-                                          .toString(), // Example quantity
+                                      user.milkDailyQuantity.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -331,7 +350,7 @@ class MilkDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Add dynamic checkboxes for dates (1-31)
+                              // Dynamic Checkboxes for Dates (1-31)
                               for (int i = 1; i <= 31; i++)
                                 TableCell(
                                   child: Center(
@@ -352,6 +371,40 @@ class MilkDetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              // Amount Column
+                              TableCell(
+                                child: InkWell(
+                                  onTap: () {
+                                    log(user.email!);
+
+                                    if (isAdmin!) {
+                                      showUpdateDialog(
+                                        context,
+                                        'Daily Amount',
+                                        user.milkDailyAmount!.toDouble(),
+                                        (p0) {
+                                          pro.updateUserEnterableTask(
+                                              user.email!,
+                                              'milkDailyAmount',
+                                              p0.toInt());
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      user.milkDailyAmount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/curd_product_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +51,7 @@ class AllTimeCurdDataScreen extends StatelessWidget {
             var milkDailyTasks = List<int>.from(data['curdDailyTasks'] ?? []);
             var milkDailyQuantity = data['curdDailyQuantity'] ?? 0;
             var milkDailyAmount = data['curdDailyAmount'] ?? 0;
+            var milkPreviousBalance = data['previousCurdBalance'] ?? 0;
             var timestamp = data['timestamp']?.toDate() ?? DateTime.now();
             milkDailyTasks.sort();
             // Create a widget for each document's data
@@ -105,7 +107,15 @@ class AllTimeCurdDataScreen extends StatelessWidget {
                         color: theme.tertiary,
                       ),
                     ),
-
+                    const SizedBox(height: 10),
+                    Text(
+                      'Curd Previous Balance: $milkPreviousBalance',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: theme.tertiary,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Text(
                       'Curd Daily Quantity: $milkDailyQuantity',

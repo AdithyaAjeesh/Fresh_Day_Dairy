@@ -3,6 +3,11 @@ class UserModel {
   String? email;
   String? passWord;
   bool? isAdmin;
+  int? previousMilkBalance;
+  int? previousButterMilkBalance;
+  int? previousGheeBalance;
+  int? previousCurdBalance;
+  int? previousButterBalance;
   int? milkDailyQuantity;
   int? milkDailyAmount;
   int? butterDailyQuantity;
@@ -13,7 +18,7 @@ class UserModel {
   int? gheeDailyAmount;
   int? curdDailyQuantity;
   int? curdDailyAmount;
-  List<int> milkDailyTasks; // Non-nullable with default empty list
+  List<int> milkDailyTasks;
   List<int> gheeDailyTasks;
   List<int> curdDailyTasks;
   List<int> butterMilkDailyTasks;
@@ -25,6 +30,11 @@ class UserModel {
     this.email,
     this.passWord,
     this.isAdmin,
+    this.previousMilkBalance,
+    this.previousButterMilkBalance,
+    this.previousGheeBalance,
+    this.previousCurdBalance,
+    this.previousButterBalance,
     this.milkDailyAmount,
     this.milkDailyQuantity,
     this.butterDailyAmount,
@@ -52,6 +62,11 @@ class UserModel {
         email = json['email'],
         passWord = json['passWord'],
         isAdmin = json['isAdmin'],
+        previousMilkBalance = json['previousMilkBalance'],
+        previousButterMilkBalance = json['previousButterMilkBalance'],
+        previousGheeBalance = json['previousGheeBalance'],
+        previousCurdBalance = json['previousCurdBalance'],
+        previousButterBalance = json['previousButterBalance'],
         milkDailyAmount = json['milkDailyAmount'],
         milkDailyQuantity = json['milkDailyQuantity'],
         butterDailyAmount = json['butterDailyAmount'],
@@ -76,6 +91,11 @@ class UserModel {
       'email': email,
       'passWord': passWord,
       'isAdmin': isAdmin,
+      'previousMilkBalance': previousMilkBalance,
+      'previousButterMilkBalance': previousButterMilkBalance,
+      'previousGheeBalance': previousGheeBalance,
+      'previousCurdBalance': previousCurdBalance,
+      'previousButterBalance': previousButterBalance,
       'milkDailyAmount': milkDailyAmount,
       'milkDailyQuantity': milkDailyQuantity,
       'butterDailyAmount': butterDailyAmount,
@@ -115,107 +135,3 @@ class UserModel {
     return butterDailyTasks.contains(date);
   }
 }
-
-// class UserModel {
-//   String? userName;
-//   String? email;
-//   String? passWord;
-//   bool? isAdmin;
-//   List<DailyTask> milkDailyTasks; // Non-nullable with default empty list
-//   List<DailyTask> gheeDailyTasks;
-//   List<DailyTask> curdDailyTasks;
-//   List<DailyTask> butterMilkDailyTasks;
-//   List<DailyTask> butterDailyTasks;
-
-//   // Constructor
-//   UserModel({
-//     this.userName,
-//     this.email,
-//     this.passWord,
-//     this.isAdmin,
-//     List<DailyTask>? milkDailyTasks,
-//     List<DailyTask>? gheeDailyTasks,
-//     List<DailyTask>? curdDailyTasks,
-//     List<DailyTask>? butterMilkDailyTasks,
-//     List<DailyTask>? butterDailyTasks,
-//   })  : milkDailyTasks = milkDailyTasks ?? [],
-//         gheeDailyTasks = gheeDailyTasks ?? [],
-//         curdDailyTasks = curdDailyTasks ?? [],
-//         butterMilkDailyTasks = butterMilkDailyTasks ?? [],
-//         butterDailyTasks = butterDailyTasks ?? [];
-
-//   // From JSON constructor
-//   UserModel.fromJson(Map<String, dynamic> json)
-//       : userName = json['userName'],
-//         email = json['email'],
-//         passWord = json['passWord'],
-//         isAdmin = json['isAdmin'],
-//         milkDailyTasks = (json['milkDailyTasks'] as List<dynamic>?)
-//                 ?.map((item) => DailyTask.fromJson(item))
-//                 .toList() ??
-//             [],
-//         gheeDailyTasks = (json['gheeDailyTasks'] as List<dynamic>?)
-//                 ?.map((item) => DailyTask.fromJson(item))
-//                 .toList() ??
-//             [],
-//         curdDailyTasks = (json['curdDailyTasks'] as List<dynamic>?)
-//                 ?.map((item) => DailyTask.fromJson(item))
-//                 .toList() ??
-//             [],
-//         butterMilkDailyTasks = (json['butterMilkDailyTasks'] as List<dynamic>?)
-//                 ?.map((item) => DailyTask.fromJson(item))
-//                 .toList() ??
-//             [],
-//         butterDailyTasks = (json['butterDailyTasks'] as List<dynamic>?)
-//                 ?.map((item) => DailyTask.fromJson(item))
-//                 .toList() ??
-//             [];
-
-//   // To JSON method
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'userName': userName,
-//       'email': email,
-//       'passWord': passWord,
-//       'isAdmin': isAdmin,
-//       'milkDailyTasks': milkDailyTasks.map((e) => e.toJson()).toList(),
-//       'gheeDailyTasks': gheeDailyTasks.map((e) => e.toJson()).toList(),
-//       'curdDailyTasks': curdDailyTasks.map((e) => e.toJson()).toList(),
-//       'butterMilkDailyTasks':
-//           butterMilkDailyTasks.map((e) => e.toJson()).toList(),
-//       'butterDailyTasks': butterDailyTasks.map((e) => e.toJson()).toList(),
-//     };
-//   }
-
-//   // Function to check if a task for a specific date is completed
-//   bool isMilkTaskCompletedForDate(int date) {
-//     return milkDailyTasks.any((task) => task.tasks?.contains(date) ?? false);
-//   }
-// }
-
-// class DailyTask {
-//   List<int>? tasks; // A list of dates when tasks were completed
-//   String? amount;
-//   String? quantity;
-
-//   // Constructor
-//   DailyTask({this.tasks, this.amount, this.quantity});
-
-//   // From JSON constructor
-//   factory DailyTask.fromJson(Map<String, dynamic> json) {
-//     return DailyTask(
-//       tasks: List<int>.from(json['tasks'] ?? []),
-//       amount: json['amount'],
-//       quantity: json['quantity'],
-//     );
-//   }
-
-//   // To JSON method
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'tasks': tasks ?? [],
-//       'amount': amount,
-//       'quantity': quantity,
-//     };
-//   }
-// }

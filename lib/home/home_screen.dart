@@ -7,10 +7,10 @@ import 'package:fresh_day_dairy_project/authentication/controller/auth_controlle
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
 import 'package:fresh_day_dairy_project/home/widgets/product_card.dart';
 import 'package:fresh_day_dairy_project/notification/notification_screen.dart';
-import 'package:fresh_day_dairy_project/products_screen/butter/butter_details_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter/butter_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/butter_milk/butter_milk_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/curd/curd_details_screen.dart';
-import 'package:fresh_day_dairy_project/products_screen/ghee/ghee_details_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/compleated_screens/ghee/ghee_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/milk/milk_details_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -87,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 image: 'assets/butter_milk.jpg',
                 title: "Butter Milk",
-                subTitle: 'The Best Milk available in the market',
+                subTitle: 'The Best Butter Milk available in the market',
               ),
               ProductCard(
                 callback: () async {
@@ -103,7 +103,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 image: 'assets/ghee.jpg',
                 title: "Ghee",
-                subTitle: 'The Best Milk available in the market',
+                subTitle: 'The Best Ghee available in the market',
               ),
               ProductCard(
                 callback: () async {
@@ -119,12 +119,12 @@ class HomeScreen extends StatelessWidget {
                 },
                 image: 'assets/curd.jpg',
                 title: "Curd",
-                subTitle: 'The Best Milk available in the market',
+                subTitle: 'The Best Curd available in the market',
               ),
               ProductCard(
                 callback: () async {
                   UserModel? user = await authProvider.getCurrentUser();
-                   Navigator.of(context).push(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => ButterDetailsScreen(
                         email: user!.email!,
@@ -135,7 +135,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 image: 'assets/butter.jpg',
                 title: "Butter",
-                subTitle: 'The Best Milk available in the market',
+                subTitle: 'The Best Butter available in the market',
               )
             ],
           );

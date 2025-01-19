@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
-import 'package:fresh_day_dairy_project/products_screen/butter/all_time_butter_data_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter/all_time_butter_data_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/butter_milk/all_time_butter_milk_data_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/butter_product_controller.dart';
 import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
@@ -182,14 +182,16 @@ class ButterDetailsScreen extends StatelessWidget {
                         width: 1,
                       ),
                       columnWidths: {
-                        0: const FixedColumnWidth(150.0),
-                        1: const FixedColumnWidth(100.0),
-                        2: const FixedColumnWidth(100.0),
-                        3: const FixedColumnWidth(50),
+                        0: const FixedColumnWidth(150.0), // Name column
+                        1: const FixedColumnWidth(
+                            150.0), // Previous Balance column
+                        2: const FixedColumnWidth(100.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
-                          i: const FixedColumnWidth(50.0),
+                          i: const FixedColumnWidth(50.0), // Dates
+                        34: const FixedColumnWidth(100.0), // Amount column
                       },
                       children: [
+                        // Header Row
                         TableRow(
                           decoration: BoxDecoration(color: theme.surface),
                           children: [
@@ -199,8 +201,9 @@ class ButterDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Name',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -209,10 +212,11 @@ class ButterDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Previous Balance',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -223,8 +227,9 @@ class ButterDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Quantity',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -237,24 +242,38 @@ class ButterDetailsScreen extends StatelessWidget {
                                   child: Text(
                                     '$i',
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        // Render rows for each user
+                        // Data Rows
                         for (var user in users)
                           TableRow(
                             children: [
+                              // Name Column
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    user.userName ??
-                                        'Unknown User', // Access the user name
+                                    user.userName ?? 'Unknown User',
                                     style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,
@@ -264,6 +283,7 @@ class ButterDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Previous Balance Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -272,12 +292,12 @@ class ButterDetailsScreen extends StatelessWidget {
                                     if (isAdmin!) {
                                       showUpdateDialog(
                                         context,
-                                        'Daily Amount',
-                                        user.butterDailyAmount!.toDouble(),
+                                        'Previous Balance',
+                                        user.previousButterBalance!.toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'butterDailyAmount',
+                                              'previousButterBalance',
                                               p0.toInt());
                                         },
                                       );
@@ -286,8 +306,8 @@ class ButterDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.butterDailyAmount
-                                          .toString(), // Example amount
+                                      user.previousButterBalance?.toString() ??
+                                          '0.0',
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -298,6 +318,7 @@ class ButterDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Quantity Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -320,8 +341,7 @@ class ButterDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.butterDailyQuantity
-                                          .toString(), // Example quantity
+                                      user.butterDailyQuantity.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -337,7 +357,6 @@ class ButterDetailsScreen extends StatelessWidget {
                                 TableCell(
                                   child: Center(
                                     child: Checkbox(
-                                      // value: user.isMilkTaskCompletedForDate(i),
                                       value:
                                           user.isButterTaskCompletedForDate(i),
                                       onChanged: (value) {
@@ -355,6 +374,40 @@ class ButterDetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              // Amount Column
+                              TableCell(
+                                child: InkWell(
+                                  onTap: () {
+                                    log(user.email!);
+
+                                    if (isAdmin!) {
+                                      showUpdateDialog(
+                                        context,
+                                        'Daily Amount',
+                                        user.butterDailyAmount!.toDouble(),
+                                        (p0) {
+                                          pro.updateUserEnterableTask(
+                                              user.email!,
+                                              'butterDailyAmount',
+                                              p0.toInt());
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      user.butterDailyAmount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                       ],

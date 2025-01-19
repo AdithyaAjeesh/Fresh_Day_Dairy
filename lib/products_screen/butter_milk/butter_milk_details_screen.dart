@@ -182,14 +182,16 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                         width: 1,
                       ),
                       columnWidths: {
-                        0: const FixedColumnWidth(150.0),
-                        1: const FixedColumnWidth(100.0),
-                        2: const FixedColumnWidth(100.0),
-                        3: const FixedColumnWidth(50),
+                        0: const FixedColumnWidth(150.0), // Name column
+                        1: const FixedColumnWidth(
+                            150.0), // Previous Balance column
+                        2: const FixedColumnWidth(100.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
-                          i: const FixedColumnWidth(50.0),
+                          i: const FixedColumnWidth(50.0), // Dates
+                        34: const FixedColumnWidth(100.0), // Amount column
                       },
                       children: [
+                        // Header Row
                         TableRow(
                           decoration: BoxDecoration(color: theme.surface),
                           children: [
@@ -199,8 +201,9 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Name',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -209,10 +212,11 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Previous Balance',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -223,8 +227,9 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                 child: Text(
                                   'Quantity',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -237,24 +242,38 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   child: Text(
                                     '$i',
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        // Render rows for each user
+                        // Data Rows
                         for (var user in users)
                           TableRow(
                             children: [
+                              // Name Column
                               TableCell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    user.userName ??
-                                        'Unknown User', // Access the user name
+                                    user.userName ?? 'Unknown User',
                                     style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,
@@ -264,6 +283,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Previous Balance Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -272,12 +292,13 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                     if (isAdmin!) {
                                       showUpdateDialog(
                                         context,
-                                        'Daily Amount',
-                                        user.milkDailyAmount!.toDouble(),
+                                        'Previous Balance',
+                                        user.previousButterMilkBalance!
+                                            .toDouble(),
                                         (p0) {
                                           pro.updateUserEnterableTask(
                                               user.email!,
-                                              'butterMilkDailyAmount',
+                                              'previousButterMilkBalance',
                                               p0.toInt());
                                         },
                                       );
@@ -286,8 +307,9 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.butterMilkDailyAmount
-                                          .toString(), // Example amount
+                                      user.previousButterMilkBalance
+                                              ?.toString() ??
+                                          '0.0',
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -298,6 +320,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // Quantity Column
                               TableCell(
                                 child: InkWell(
                                   onTap: () {
@@ -321,8 +344,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      user.butterMilkDailyQuantity
-                                          .toString(), // Example quantity
+                                      user.butterMilkDailyQuantity.toString(),
                                       style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.black,
@@ -338,7 +360,6 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                 TableCell(
                                   child: Center(
                                     child: Checkbox(
-                                      // value: user.isMilkTaskCompletedForDate(i),
                                       value: user
                                           .isButterMilkTaskCompletedForDate(i),
                                       onChanged: (value) {
@@ -356,6 +377,40 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              // Amount Column
+                              TableCell(
+                                child: InkWell(
+                                  onTap: () {
+                                    log(user.email!);
+
+                                    if (isAdmin!) {
+                                      showUpdateDialog(
+                                        context,
+                                        'Daily Amount',
+                                        user.butterMilkDailyAmount!.toDouble(),
+                                        (p0) {
+                                          pro.updateUserEnterableTask(
+                                              user.email!,
+                                              'butterMilkDailyAmount',
+                                              p0.toInt());
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      user.butterMilkDailyAmount.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                       ],
