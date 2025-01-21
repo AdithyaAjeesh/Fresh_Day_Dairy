@@ -11,7 +11,7 @@ import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butte
 import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter_milk/butter_milk_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/compleated_screens/curd/curd_details_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/compleated_screens/ghee/ghee_details_screen.dart';
-import 'package:fresh_day_dairy_project/products_screen/milk/milk_details_screen.dart';
+import 'package:fresh_day_dairy_project/products_screen/compleated_screens/milk/milk_details_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
