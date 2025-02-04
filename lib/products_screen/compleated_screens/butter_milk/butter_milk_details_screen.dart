@@ -189,6 +189,7 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                         for (int i = 3; i <= 33; i++)
                           i: const FixedColumnWidth(50.0), // Dates
                         34: const FixedColumnWidth(100.0), // Amount column
+                        35: const FixedColumnWidth(100.0), // A
                       },
                       children: [
                         // Header Row
@@ -253,7 +254,20 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Daily Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount Sold',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -363,16 +377,22 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                       value: user
                                           .isButterMilkTaskCompletedForDate(i),
                                       onChanged: (value) {
-                                        if (isAdmin!) {
-                                          if (value == true) {
-                                            user.butterMilkDailyTasks.add(i);
-                                          } else {
-                                            user.butterMilkDailyTasks.remove(i);
-                                          }
-                                          provider.updateUser(user);
+                                        // if (isAdmin!) {
+                                        //   if (value == true) {
+                                        //     user.butterMilkDailyTasks.add(i);
+                                        //   } else {
+                                        //     user.butterMilkDailyTasks.remove(i);
+                                        //   }
+                                        //   provider.updateUser(user);
+                                        // } else {
+                                        //   return null;
+                                        // }
+                                        if (value == true) {
+                                          user.butterMilkDailyTasks.add(i);
                                         } else {
-                                          return null;
+                                          user.butterMilkDailyTasks.remove(i);
                                         }
+                                        provider.updateUser(user);
                                       },
                                     ),
                                   ),
@@ -408,6 +428,22 @@ class ButterMilkDetailsScreen extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    (user.butterMilkDailyTasks.length *
+                                            (user.butterMilkDailyAmount ?? 0))
+                                        .toString(),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),

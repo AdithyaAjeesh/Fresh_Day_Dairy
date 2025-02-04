@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fresh_day_dairy_project/authentication/model/user_model.dart';
 import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter/all_time_butter_data_screen.dart';
-import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter_milk/all_time_butter_milk_data_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/butter_product_controller.dart';
 import 'package:fresh_day_dairy_project/products_screen/user_list_screen.dart';
 import 'package:provider/provider.dart';
@@ -189,6 +188,7 @@ class ButterDetailsScreen extends StatelessWidget {
                         for (int i = 3; i <= 33; i++)
                           i: const FixedColumnWidth(50.0), // Dates
                         34: const FixedColumnWidth(100.0), // Amount column
+                        35: const FixedColumnWidth(100.0),
                       },
                       children: [
                         // Header Row
@@ -253,7 +253,20 @@ class ButterDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Daily Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount Sold',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -360,16 +373,22 @@ class ButterDetailsScreen extends StatelessWidget {
                                       value:
                                           user.isButterTaskCompletedForDate(i),
                                       onChanged: (value) {
-                                        if (isAdmin!) {
-                                          if (value == true) {
-                                            user.butterDailyTasks.add(i);
-                                          } else {
-                                            user.butterDailyTasks.remove(i);
-                                          }
-                                          provider.updateUser(user);
+                                        // if (isAdmin!) {
+                                        //   if (value == true) {
+                                        //     user.butterDailyTasks.add(i);
+                                        //   } else {
+                                        //     user.butterDailyTasks.remove(i);
+                                        //   }
+                                        //   provider.updateUser(user);
+                                        // } else {
+                                        //   return null;
+                                        // }
+                                        if (value == true) {
+                                          user.butterDailyTasks.add(i);
                                         } else {
-                                          return null;
+                                          user.butterDailyTasks.remove(i);
                                         }
+                                        provider.updateUser(user);
                                       },
                                     ),
                                   ),
@@ -408,6 +427,22 @@ class ButterDetailsScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    (user.butterDailyTasks.length *
+                                            (user.butterDailyAmount ?? 0))
+                                        .toString(),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                       ],
@@ -423,7 +458,7 @@ class ButterDetailsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Total Amount: ',
+                        'Total Daily Amount: ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,

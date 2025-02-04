@@ -6,7 +6,6 @@ import 'package:fresh_day_dairy_project/common/controller/bottom_nav_controller.
 import 'package:fresh_day_dairy_project/common/themes/lightmode_theme.dart';
 import 'package:fresh_day_dairy_project/firebase_options.dart';
 import 'package:fresh_day_dairy_project/authentication/controller/auth_controller.dart';
-import 'package:fresh_day_dairy_project/products_screen/compleated_screens/butter_milk/all_time_butter_milk_data_screen.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/butter_milk_product_controller.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/butter_product_controller.dart';
 import 'package:fresh_day_dairy_project/products_screen/controller/curd_product_controller.dart';

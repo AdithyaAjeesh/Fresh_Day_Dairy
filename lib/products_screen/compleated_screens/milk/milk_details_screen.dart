@@ -182,12 +182,12 @@ class MilkDetailsScreen extends StatelessWidget {
                       ),
                       columnWidths: {
                         0: const FixedColumnWidth(150.0), // Name column
-                        1: const FixedColumnWidth(
-                            150.0), // Previous Balance column
+                        1: const FixedColumnWidth(150.0),
                         2: const FixedColumnWidth(150.0), // Quantity column
                         for (int i = 3; i <= 33; i++)
                           i: const FixedColumnWidth(50.0), // Dates
-                        34: const FixedColumnWidth(100.0), // Amount column
+                        34: const FixedColumnWidth(100.0),
+                        35: const FixedColumnWidth(100.0), // Amount column
                       },
                       children: [
                         // Header Row
@@ -252,7 +252,20 @@ class MilkDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Amount',
+                                  'Daily Amount',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            const TableCell(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Amount Sold',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -357,16 +370,23 @@ class MilkDetailsScreen extends StatelessWidget {
                                     child: Checkbox(
                                       value: user.isMilkTaskCompletedForDate(i),
                                       onChanged: (value) {
-                                        if (isAdmin!) {
-                                          if (value == true) {
-                                            user.milkDailyTasks.add(i);
-                                          } else {
-                                            user.milkDailyTasks.remove(i);
-                                          }
-                                          provider.updateUser(user);
+                                        // if (isAdmin!) {
+                                        //   if (value == true) {
+                                        //     user.milkDailyTasks.add(i);
+                                        //   } else {
+                                        //     user.milkDailyTasks.remove(i);
+                                        //   }
+                                        //   provider.updateUser(user);
+                                        // } else {
+                                        //   return null;
+                                        // }
+
+                                        if (value == true) {
+                                          user.milkDailyTasks.add(i);
                                         } else {
-                                          return null;
+                                          user.milkDailyTasks.remove(i);
                                         }
+                                        provider.updateUser(user);
                                       },
                                     ),
                                   ),
@@ -402,6 +422,22 @@ class MilkDetailsScreen extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    (user.milkDailyTasks.length *
+                                            (user.milkDailyAmount ?? 0))
+                                        .toString(),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
